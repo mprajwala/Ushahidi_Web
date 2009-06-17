@@ -626,6 +626,7 @@ CREATE TABLE IF NOT EXISTS `feed_item`
 `item_description` TEXT default NULL,
 `item_link` VARCHAR(255) default NULL,
 `item_date` DATETIME default NULL,
+`feed_type` VARCHAR(30) default NULL,
 PRIMARY KEY (`id`)
 );
 

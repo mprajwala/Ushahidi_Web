@@ -13,6 +13,21 @@
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
 
+/**
+ * Feed type value for news
+ */
+define('FEED_TYPE_TEXT', 'text');
+
+/**
+ * Feed type value for videos
+ */
+define('FEED_TYPE_VIDEO', 'video');
+
+/**
+ * Feed type value for photos
+ */
+define('FEED_TYPE_PHOTO', 'photo');
+
 class Manage_Controller extends Admin_Controller
 {
 
@@ -644,9 +659,37 @@ class Manage_Controller extends Admin_Controller
 			$data->enable_order_by_date(true);
 			$data->init();
 			$data->handle_content_type();
-
 			return $data;
 	}
+
+        /**
+         * get the feed type of the feed item. 
+         */
+        private function _get_feed_type( $feed_item ) {
+          @$enclosures = $feed_item->get_enclosures();
+          if($enclosures and ($enclosures[0]->medium == 'video' || strstr($enclosures[0]->type,'video'))){
+            return FEED_TYPE_VIDEO;
+          }
+          if($enclosures and strstr($enclosures[0]->type,'image') || $enclosures[0]->medium == 'image'){
+            return FEED_TYPE_PHOTO;
+          }
+
+          $categories = $feed_item->get_categories();
+          if(!$categories || empty($categories)){
+            return FEED_TYPE_TEXT;
+          }
+          // go through categories for the label having Report Type
+          foreach($categories as $key => $category){
+            if(!empty($category->label)){
+                $matched = strstr($category->label,'Report type');
+                if(!empty($matched)){
+                  $split_array = split(':', $category->label);
+                  return trim($split_array[1]);
+                }
+            }
+          }
+	  return FEED_TYPE_TEXT;
+        }
 	
 	/**
 	 * parse feed and send feed items to database
@@ -677,6 +720,13 @@ class Manage_Controller extends Admin_Controller
 					$link = $feed_data_item->get_link();
 					$description = $feed_data_item->get_description();
 					$date = $feed_data_item->get_date();
+
+                                        $feed_type = $this->_get_feed_type($feed_data_item);
+                                        if($feed_type == FEED_TYPE_VIDEO || $feed_type == FEED_TYPE_PHOTO){
+                                          $encs = $feed_data_item->get_enclosure();
+                                          $link = $encs->get_link();
+                                        }
+
 					// Make Sure Title is Set (Atleast)
 					if (isset($title) && !empty($title ))
 					{
@@ -705,6 +755,12 @@ class Manage_Controller extends Admin_Controller
 							{
 								$newitem->item_date = date("Y-m-d H:i:s",time());
 							}
+
+                                                        if (isset($feed_type) && !empty($feed_type))
+                                                        {
+                                                                $newitem->feed_type = $feed_type;
+                                                        }
+
 							$newitem->save();
 						}
 					}
