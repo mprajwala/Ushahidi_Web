@@ -198,5 +198,50 @@
         </div>
       </div>
       <!-- end start incidents and news blocks -->
+
+      <div class="big-block">
+         <div class="big-block-top">
+            <div class="big-block-bottom">
+               <h2>Related Photos</h2>
+               <ul class="photos">      
+                <?php 
+                   foreach ($photo_feeds as $feed) {
+                     $feed_id = $feed->id;
+                     $feed_title = text::limit_chars($feed->item_title, 140, '...', True);
+                     $feed_link = $feed->item_link;
+                ?>
+                <li class="feed_item">     
+                  <a href="#"><img src="<?php echo $feed_link; ?>" width="170" height="140"/></a>
+                  <a href="#" class="title"><?php echo $feed_title; ?></a>
+                </li>
+                <?php } ?>
+	       </ul>
+            </div>
+         </div>
+      </div>
+
+      <div class="big-block">
+         <div class="big-block-top">
+            <div class="big-block-bottom">
+               <h2>Related Videos</h2>
+               <ul class="videos">
+                 <?php 
+                    foreach ($video_feeds as $feed) {
+                      $feed_id = $feed->id;
+                      $feed_title = text::limit_chars($feed->item_title, 140, '...', True);
+                      $feed_link = $feed->item_link;
+                 ?>
+                 <li class="feed_item">     
+                   <object width="250" height="200"><param name="movie" value="<?php echo $feed_link; ?>"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="<?php echo $feed_link; ?>" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="250" height="200"></embed></object>
+
+                  <a href="#" class="title"><?php echo $feed_title; ?></a>
+                 </li>
+                 <?php } ?>
+	       </ul>
+            </div>
+         </div>
+      </div>
+
+
     </div>
   </div>
