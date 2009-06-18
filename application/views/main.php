@@ -198,7 +198,7 @@
         </div>
       </div>
       <!-- end start incidents and news blocks -->
-
+      <?php if (count($photo_feeds) > 0) { ?>
       <div class="big-block">
          <div class="big-block-top">
             <div class="big-block-bottom">
@@ -219,7 +219,9 @@
             </div>
          </div>
       </div>
+      <?php } ?>
 
+      <?php if (count($video_feeds) > 0) { ?>
       <div class="big-block">
          <div class="big-block-top">
             <div class="big-block-bottom">
@@ -241,7 +243,7 @@
             </div>
          </div>
       </div>
-
+      <?php } ?>
 
     </div>
   </div>
